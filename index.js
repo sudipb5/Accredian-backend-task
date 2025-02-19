@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import { sendReferralEmail } from './utils/email.js';  // Changed from emailService.js to email.js
-import { sendEmail, isAuthenticated } from './utils/gmail.js';  // Added Gmail import
+// import { sendEmail, isAuthenticated } from './utils/gmail.js';  // Added Gmail import
 import dotenv from 'dotenv';
 
 dotenv.config();
