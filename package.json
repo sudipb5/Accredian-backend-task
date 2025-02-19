@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -21,5 +22,8 @@
   "devDependencies": {
     "nodemon": "^3.1.9",
     "prisma": "^5.10.0"
+  },
+  "engines": {
+    "node": ">=18.17.0"
   }
 }
