@@ -17,7 +17,11 @@ app.use(express.json());
 
 // Test route
 app.get('/', (req, res) => {
-  res.json({ message: 'Backend is running!' });
+  res.json({ 
+    message: 'Backend is running!',
+    environment: process.env.NODE_ENV,
+    database: process.env.DATABASE_URL ? 'Configured' : 'Not configured'
+  });
 });
 
 // Create referral
@@ -86,4 +90,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log('Environment:', process.env.NODE_ENV);
+  console.log('Database URL configured:', !!process.env.DATABASE_URL);
 });
