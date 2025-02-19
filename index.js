@@ -1,8 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import { sendReferralEmail } from './utils/email.js';  // Changed from emailService.js to email.js
-// import { sendEmail, isAuthenticated } from './utils/gmail.js';  // Added Gmail import
+import { sendReferralEmail } from './utils/email.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,8 +21,7 @@ app.get('/', (req, res) => {
     message: 'Backend is running!',
     environment: process.env.NODE_ENV,
     database: process.env.DATABASE_URL ? 'Configured' : 'Not configured',
-    emailService: process.env.SMTP_USER ? 'Configured' : 'Not configured',
-    gmailService: isAuthenticated() ? 'Configured' : 'Not configured'
+    emailService: process.env.SMTP_USER ? 'Configured' : 'Not configured'
   });
 });
 
@@ -43,30 +41,13 @@ app.post('/api/referrals', async (req, res) => {
       },
     });
 
-    // Try SMTP first, then Gmail API as fallback
+    // Send email notification
     let emailSent = false;
     try {
       emailSent = await sendReferralEmail(refereeEmail, refereeName, referrerName, courseName);
-    } catch (smtpError) {
-      console.error('SMTP email failed, trying Gmail API:', smtpError);
-      
-      if (isAuthenticated()) {
-        const emailOptions = {
-          to: refereeEmail,
-          from: `"Accredian Courses" <${process.env.SMTP_USER}>`,
-          subject: `${referrerName} has referred you for ${courseName}!`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-              <h2 style="color: #333;">Hello ${refereeName}! 👋</h2>
-              <p>Your friend <strong>${referrerName}</strong> thinks you'd be interested in our <strong>${courseName}</strong> course.</p>
-              <!-- Rest of your email template -->
-            </div>
-          `
-        };
-        
-        const gmailResult = await sendEmail(emailOptions);
-        emailSent = gmailResult.success;
-      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      // Continue even if email fails
     }
 
     res.json({
@@ -114,5 +95,4 @@ app.listen(PORT, () => {
   console.log('Environment:', process.env.NODE_ENV);
   console.log('Database URL configured:', !!process.env.DATABASE_URL);
   console.log('SMTP Email configured:', !!process.env.SMTP_USER);
-  console.log('Gmail API configured:', isAuthenticated());
 });
