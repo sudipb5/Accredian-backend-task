@@ -9,9 +9,6 @@
     "dev": "nodemon index.js",
     "postinstall": "prisma generate"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.10.0",
     "cors": "^2.8.5",
